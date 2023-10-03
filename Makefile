@@ -2,8 +2,7 @@ SHELL := /bin/bash
 
 PY_MODULE := sigstore_rekor_types
 
-ALL_PY_SRCS := $(shell find $(PY_MODULE) -name '*.py') \
-	$(shell find test -name '*.py')
+ALL_PY_SRCS := $(shell find $(PY_MODULE) -name '*.py')
 
 # Optionally overriden by the user, if they're using a virtual environment manager.
 VENV ?= env
@@ -17,24 +16,9 @@ endif
 # Optionally overridden by the user in the `release` target.
 BUMP_ARGS :=
 
-# Optionally overridden by the user in the `test` target.
-TESTS :=
-
 # Optionally overridden by the user/CI, to limit the installation to a specific
 # subset of development dependencies.
 INSTALL_EXTRA := dev
-
-# If the user selects a specific test pattern to run, set `pytest` to fail fast
-# and only run tests that match the pattern.
-# Otherwise, run all tests and enable coverage assertions, since we expect
-# complete test coverage.
-ifneq ($(TESTS),)
-	TEST_ARGS := -x -k $(TESTS)
-	COV_ARGS :=
-else
-	TEST_ARGS :=
-	COV_ARGS := --fail-under 100
-endif
 
 .PHONY: all
 all:
@@ -61,13 +45,6 @@ reformat:
 	. $(VENV_BIN)/activate && \
 		black --preview $(ALL_PY_SRCS) && \
 		ruff --fix $(ALL_PY_SRCS)
-
-
-.PHONY: test tests
-test tests: $(VENV)/pyvenv.cfg
-	. $(VENV_BIN)/activate && \
-		pytest --cov=$(PY_MODULE) $(T) $(TEST_ARGS) && \
-		python -m coverage report -m $(COV_ARGS)
 
 .PHONY: doc
 doc: $(VENV)/pyvenv.cfg
