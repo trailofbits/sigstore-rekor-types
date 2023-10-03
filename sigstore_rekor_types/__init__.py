@@ -2,7 +2,19 @@
 
 __version__ = "0.0.1"
 
-from _internal import alpine, cose, dsse, hashedrekord, helm, intoto, jar, rekord, rfc3161, rpm, tuf
+from ._internal import (
+    alpine,
+    cose,
+    dsse,
+    hashedrekord,
+    helm,
+    intoto,
+    jar,
+    rekord,
+    rfc3161,
+    rpm,
+    tuf,
+)
 
 __all__ = [
     "alpine",
