@@ -1,6 +1,6 @@
 """The `sigstore_rekor_types` APIs."""
 
-__version__ = "0.0.1rc0"
+__version__ = "0.0.1"
 
 from ._internal import (
     alpine,
