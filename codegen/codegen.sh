@@ -1,0 +1,63 @@
+#!/usr/bin/env bash
+
+# codegen: generate Python models from Rekor's OpenAPI specs
+
+set -eo pipefail
+
+# Always enable debug logging in CI.
+DEBUG="${DEBUG:-${CI}}"
+
+dbg() {
+    [[ -n "${DEBUG}" ]] && >&2 echo "[+] ${*}"
+}
+
+type -p datamodel-codegen || { >&2 echo "barf: missing datamodel-codegen"; exit 1; }
+
+here="$(dirname -- "$(readlink -f -- "${0}")")"
+pkg_dir="$(readlink -f -- "${here}/../sigstore_rekor_types")"
+[[ -d "${pkg_dir}" ]] || { >&2 echo "missing package dir: ${pkg_dir}"; exit 1; }
+dbg "codegen running from ${here} and writing to ${pkg_dir}"
+
+rekor_ref="$(<"${here}/version")"
+dbg "generating from Rekor ${rekor_ref}"
+
+rekor_dir=$(mktemp -d)/rekor
+dbg "cloning Rekor into ${rekor_dir}"
+git clone --quiet \
+    --depth=1 \
+    --branch="${rekor_ref}" \
+    https://github.com/sigstore/rekor \
+    "${rekor_dir}"
+
+# NOTE(ww): This is a miserable hack: ideally we'd use Rekor's top-level
+# `openapi.yaml`, but it's written in OpenAPI 2.0 (because go-swagger only
+# supports 2.0). Meanwhile, `datamodel-codegen` only supports OpenAPI 3.0+.
+# Neither can be trivially upgraded. As a stop-gap, we poke through each
+# internal JSON Schema definition used by Rekor and generate them one-by-one.
+#
+# See:
+#  * https://github.com/go-swagger/go-swagger/issues/1122
+#  * https://github.com/koxudaxi/datamodel-code-generator/issues/1590
+#  * https://github.com/sigstore/rekor/issues/1729
+mkdir -p "${pkg_dir}/_internal"
+touch "${pkg_dir}/_internal/__init__.py"
+rekor_types=(alpine cose dsse hashedrekord helm intoto jar rekord rfc3161 rpm tuf)
+for type in "${rekor_types[@]}"; do
+    dbg "generating models for Rekor type: ${type}"
+    datamodel-codegen \
+        --input "${rekor_dir}/pkg/types/${type}/${type}_schema.json" \
+        --input-file-type jsonschema \
+        --target-python-version 3.8 \
+        --snake-case-field \
+        --capitalize-enum-members \
+        --field-constraints \
+        --strict-types str bytes int float bool \
+        --output-model-type pydantic_v2.BaseModel \
+        --output "${pkg_dir}/_internal/${type}.py"
+done
+
+# Cap it off by auto-reformatting.
+make -C "${here}/.." reformat
+
+# Once more for good luck.
+make -C "${here}/.." reformat
