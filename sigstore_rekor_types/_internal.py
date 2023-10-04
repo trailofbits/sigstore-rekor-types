@@ -12,7 +12,7 @@ class ProposedEntry(BaseModel):
     kind: StrictStr
 
 
-class Format(Enum):
+class Format(str, Enum):
     """Specifies the format of the signature."""
 
     PGP = "pgp"
@@ -58,7 +58,7 @@ class PublicKey1(BaseModel):
     """The public key that can verify the signature; this can also be an X509 code signing certificate that contains the raw public key information."""
 
     content: Optional[str] = Field(
-        None,
+        default=None,
         description=(
             "Specifies the content of the public key or code signing certificate inline within the"
             " document"
@@ -70,11 +70,11 @@ class Signature1(BaseModel):
     """Information about the detached signature associated with the entry."""
 
     content: Optional[str] = Field(
-        None,
+        default=None,
         description="Specifies the content of the signature inline within the document",
     )
     public_key: Optional[PublicKey1] = Field(
-        None,
+        default=None,
         alias="publicKey",
         description=(
             "The public key that can verify the signature; this can also be an X509 code signing"
@@ -83,7 +83,7 @@ class Signature1(BaseModel):
     )
 
 
-class Algorithm(Enum):
+class Algorithm(str, Enum):
     """The hashing function used to compute the hash value."""
 
     SHA256 = "sha256"
@@ -103,7 +103,7 @@ class Data(BaseModel):
     """Information about the content associated with the entry."""
 
     hash: Optional[Hash] = Field(
-        None,
+        default=None,
         description="Specifies the hash algorithm and value for the content",
     )
 
@@ -158,7 +158,7 @@ class Root(BaseModel):
 class TufV001Schema(BaseModel):
     """Schema for TUF metadata entries."""
 
-    spec_version: Optional[StrictStr] = Field(None, description="TUF specification version")
+    spec_version: Optional[StrictStr] = Field(default=None, description="TUF specification version")
     metadata: Metadata = Field(..., description="TUF metadata")
     root: Root = Field(
         ...,
@@ -199,7 +199,7 @@ class Chart(BaseModel):
     """Information about the Helm chart associated with the entry."""
 
     hash: Optional[Hash1] = Field(
-        None,
+        default=None,
         description="Specifies the hash algorithm and value for the chart",
     )
 
@@ -239,16 +239,16 @@ class PayloadHash(BaseModel):
 
 
 class Content(BaseModel):
-    envelope: Optional[StrictStr] = Field(None, description="envelope")
+    envelope: Optional[StrictStr] = Field(default=None, description="envelope")
     hash: Optional[Hash2] = Field(
-        None,
+        default=None,
         description=(
             "Specifies the hash algorithm and value encompassing the entire signed envelope; this"
             " is computed by the rekor server, client-provided values are ignored"
         ),
     )
     payload_hash: Optional[PayloadHash] = Field(
-        None,
+        default=None,
         alias="payloadHash",
         description=(
             "Specifies the hash algorithm and value covering the payload within the DSSE envelope;"
@@ -272,7 +272,7 @@ class Signature2(BaseModel):
     """a signature of the envelope's payload along with the public key for the signature."""
 
     keyid: Optional[StrictStr] = Field(
-        None,
+        default=None,
         description="optional id of the key used to create the signature",
     )
     sig: str = Field(..., description="signature of the payload")
@@ -286,7 +286,7 @@ class Signature2(BaseModel):
 class Envelope(BaseModel):
     """dsse envelope."""
 
-    payload: Optional[str] = Field(None, description="payload of the envelope")
+    payload: Optional[str] = Field(default=None, description="payload of the envelope")
     payload_type: StrictStr = Field(
         ...,
         alias="payloadType",
@@ -322,13 +322,13 @@ class PayloadHash1(BaseModel):
 class Content1(BaseModel):
     envelope: Envelope = Field(..., description="dsse envelope")
     hash: Optional[Hash3] = Field(
-        None,
+        default=None,
         description=(
             "Specifies the hash algorithm and value encompassing the entire signed envelope"
         ),
     )
     payload_hash: Optional[PayloadHash1] = Field(
-        None,
+        default=None,
         alias="payloadHash",
         description=(
             "Specifies the hash algorithm and value covering the payload within the DSSE envelope"
@@ -342,14 +342,8 @@ class IntotoV002Schema(BaseModel):
     content: Content1
 
 
-class PayloadHash2(BaseModel):
+class PayloadHash2(Hash):
     """Specifies the hash algorithm and value for the content."""
-
-    algorithm: Algorithm = Field(
-        ...,
-        description="The hashing function used to compute the hash value",
-    )
-    value: StrictStr = Field(..., description="The hash value for the content")
 
 
 class EnvelopeHash(BaseModel):
@@ -366,17 +360,17 @@ class Data1(BaseModel):
     """Information about the content associated with the entry."""
 
     payload_hash: Optional[PayloadHash2] = Field(
-        None,
+        default=None,
         alias="payloadHash",
         description="Specifies the hash algorithm and value for the content",
     )
     envelope_hash: Optional[EnvelopeHash] = Field(
-        None,
+        default=None,
         alias="envelopeHash",
         description="Specifies the hash algorithm and value for the COSE envelope",
     )
     aad: Optional[str] = Field(
-        None,
+        default=None,
         description="Specifies the additional authenticated data required to verify the signature",
     )
 
@@ -384,7 +378,7 @@ class Data1(BaseModel):
 class CoseV001Schema(BaseModel):
     """Schema for cose object."""
 
-    message: Optional[str] = Field(None, description="The COSE Sign1 Message")
+    message: Optional[str] = Field(default=None, description="The COSE Sign1 Message")
     public_key: str = Field(
         ...,
         alias="publicKey",
@@ -426,7 +420,7 @@ class JarV001Schema(BaseModel):
     """Schema for JAR entries."""
 
     signature: Optional[Signature3] = Field(
-        None,
+        default=None,
         description="Information about the included signature in the JAR file",
     )
 
@@ -503,9 +497,9 @@ class PayloadHash3(BaseModel):
 class DsseV001Schema(BaseModel):
     """Schema for DSSE envelopes."""
 
-    proposed_content: Optional[ProposedContent] = Field(None, alias="proposedContent")
+    proposed_content: Optional[ProposedContent] = Field(default=None, alias="proposedContent")
     signatures: Optional[List[Signature4]] = Field(
-        None,
+        default=None,
         description=(
             "extracted collection of all signatures of the envelope's payload; elements will be"
             " sorted by lexicographical order of the base64 encoded signature strings"
@@ -513,14 +507,14 @@ class DsseV001Schema(BaseModel):
         min_length=1,
     )
     envelope_hash: Optional[EnvelopeHash1] = Field(
-        None,
+        default=None,
         alias="envelopeHash",
         description=(
             "Specifies the hash algorithm and value encompassing the entire envelope sent to Rekor"
         ),
     )
     payload_hash: Optional[PayloadHash3] = Field(
-        None,
+        default=None,
         alias="payloadHash",
         description=(
             "Specifies the hash algorithm and value covering the payload within the DSSE envelope"
@@ -532,7 +526,7 @@ class Attestation(BaseModel):
     data: Optional[Dict[str, Any]] = None
 
 
-class Format1(Enum):
+class Format1(str, Enum):
     PGP = "pgp"
     X509 = "x509"
     MINISIGN = "minisign"
@@ -543,20 +537,20 @@ class Format1(Enum):
 class PublicKey6(BaseModel):
     format: Format1
     content: Optional[str] = Field(
-        None,
+        default=None,
         pattern="^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$",
     )
     url: Optional[AnyUrl] = None
 
 
-class Operator(Enum):
+class Operator(str, Enum):
     AND_ = "and"
     OR_ = "or"
 
 
 class SearchIndex(BaseModel):
     email: Optional[EmailStr] = None
-    public_key: Optional[PublicKey6] = Field(None, alias="publicKey")
+    public_key: Optional[PublicKey6] = Field(default=None, alias="publicKey")
     hash: Optional[StrictStr] = None
     operator: Optional[Operator] = None
 
@@ -571,18 +565,18 @@ class LogIndex(RootModel[StrictInt]):
 
 class SearchLogQuery(BaseModel):
     entry_uui_ds: Optional[List[EntryUuiD]] = Field(
-        None,
+        default=None,
         alias="entryUUIDs",
         max_length=10,
         min_length=1,
     )
     log_indexes: Optional[List[LogIndex]] = Field(
-        None,
+        default=None,
         alias="logIndexes",
         max_length=10,
         min_length=1,
     )
-    entries: Optional[List[ProposedEntry]] = Field(None, max_length=10, min_length=1)
+    entries: Optional[List[ProposedEntry]] = Field(default=None, max_length=10, min_length=1)
 
 
 class InactiveShardLogInfo(BaseModel):
@@ -730,9 +724,9 @@ class DsseSchema(RootModel[DsseV001Schema]):
 
 
 class Verification(BaseModel):
-    inclusion_proof: Optional[InclusionProof] = Field(None, alias="inclusionProof")
+    inclusion_proof: Optional[InclusionProof] = Field(default=None, alias="inclusionProof")
     signed_entry_timestamp: Optional[str] = Field(
-        None,
+        default=None,
         alias="signedEntryTimestamp",
         description="Signature over the logID, logIndex, body and integratedTime.",
         pattern="^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$",
@@ -780,7 +774,10 @@ class LogInfo(BaseModel):
         description="The current signed tree head",
     )
     tree_id: StrictStr = Field(..., alias="treeID", description="The current treeID")
-    inactive_shards: Optional[List[InactiveShardLogInfo]] = Field(None, alias="inactiveShards")
+    inactive_shards: Optional[List[InactiveShardLogInfo]] = Field(
+        default=None,
+        alias="inactiveShards",
+    )
 
 
 class Rekord(ProposedEntry):
