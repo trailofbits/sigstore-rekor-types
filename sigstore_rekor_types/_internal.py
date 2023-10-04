@@ -5,10 +5,13 @@ from __future__ import annotations
 from enum import Enum
 from typing import Any, Dict, List, Optional, Union
 
-from pydantic import AnyUrl, BaseModel, EmailStr, Field, RootModel, StrictInt, StrictStr
+from pydantic import AnyUrl, BaseModel, ConfigDict, EmailStr, Field, RootModel, StrictInt, StrictStr
 
 
 class ProposedEntry(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
     kind: StrictStr
 
 
@@ -24,6 +27,9 @@ class Format(str, Enum):
 class PublicKey(BaseModel):
     """The public key that can verify the signature."""
 
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
     content: str = Field(
         ...,
         description="Specifies the content of the public key inline within the document",
@@ -33,6 +39,9 @@ class PublicKey(BaseModel):
 class Signature(BaseModel):
     """Information about the detached signature associated with the entry."""
 
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
     format: Format = Field(..., description="Specifies the format of the signature")
     content: str = Field(
         ...,
@@ -48,6 +57,9 @@ class Signature(BaseModel):
 class RekordV001Schema(BaseModel):
     """Schema for Rekord object."""
 
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
     signature: Signature = Field(
         ...,
         description="Information about the detached signature associated with the entry",
@@ -57,6 +69,9 @@ class RekordV001Schema(BaseModel):
 class PublicKey1(BaseModel):
     """The public key that can verify the signature; this can also be an X509 code signing certificate that contains the raw public key information."""
 
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
     content: Optional[str] = Field(
         default=None,
         description=(
@@ -69,6 +84,9 @@ class PublicKey1(BaseModel):
 class Signature1(BaseModel):
     """Information about the detached signature associated with the entry."""
 
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
     content: Optional[str] = Field(
         default=None,
         description="Specifies the content of the signature inline within the document",
@@ -92,6 +110,9 @@ class Algorithm(str, Enum):
 class Hash(BaseModel):
     """Specifies the hash algorithm and value for the content."""
 
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
     algorithm: Algorithm = Field(
         ...,
         description="The hashing function used to compute the hash value",
@@ -102,6 +123,9 @@ class Hash(BaseModel):
 class Data(BaseModel):
     """Information about the content associated with the entry."""
 
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
     hash: Optional[Hash] = Field(
         default=None,
         description="Specifies the hash algorithm and value for the content",
@@ -111,6 +135,9 @@ class Data(BaseModel):
 class HashedrekordV001Schema(BaseModel):
     """Schema for Hashed Rekord object."""
 
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
     signature: Signature1 = Field(
         ...,
         description="Information about the detached signature associated with the entry",
@@ -121,6 +148,9 @@ class HashedrekordV001Schema(BaseModel):
 class PublicKey2(BaseModel):
     """The PGP public key that can verify the RPM signature."""
 
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
     content: str = Field(
         ...,
         description="Specifies the content of the public key inline within the document",
@@ -130,6 +160,9 @@ class PublicKey2(BaseModel):
 class RpmV001Schema(BaseModel):
     """Schema for RPM entries."""
 
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
     public_key: PublicKey2 = Field(
         ...,
         alias="publicKey",
@@ -140,6 +173,9 @@ class RpmV001Schema(BaseModel):
 class Metadata(BaseModel):
     """TUF metadata."""
 
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
     content: Dict[str, Any] = Field(
         ...,
         description="Specifies the metadata inline within the document",
@@ -149,6 +185,9 @@ class Metadata(BaseModel):
 class Root(BaseModel):
     """root metadata containing about the public keys used to sign the manifest."""
 
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
     content: Dict[str, Any] = Field(
         ...,
         description="Specifies the metadata inline within the document",
@@ -158,6 +197,9 @@ class Root(BaseModel):
 class TufV001Schema(BaseModel):
     """Schema for TUF metadata entries."""
 
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
     spec_version: Optional[StrictStr] = Field(default=None, description="TUF specification version")
     metadata: Metadata = Field(..., description="TUF metadata")
     root: Root = Field(
@@ -169,6 +211,9 @@ class TufV001Schema(BaseModel):
 class PublicKey3(BaseModel):
     """The public key that can verify the package signature."""
 
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
     content: str = Field(
         ...,
         description="Specifies the content of the public key inline within the document",
@@ -178,6 +223,9 @@ class PublicKey3(BaseModel):
 class AlpineV001Schema(BaseModel):
     """Schema for Alpine Package entries."""
 
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
     public_key: PublicKey3 = Field(
         ...,
         alias="publicKey",
@@ -188,6 +236,9 @@ class AlpineV001Schema(BaseModel):
 class Hash1(BaseModel):
     """Specifies the hash algorithm and value for the chart."""
 
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
     algorithm: Algorithm = Field(
         ...,
         description="The hashing function used to compute the hash value",
@@ -198,6 +249,9 @@ class Hash1(BaseModel):
 class Chart(BaseModel):
     """Information about the Helm chart associated with the entry."""
 
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
     hash: Optional[Hash1] = Field(
         default=None,
         description="Specifies the hash algorithm and value for the chart",
@@ -207,6 +261,9 @@ class Chart(BaseModel):
 class HelmV001Schema(BaseModel):
     """Schema for Helm object."""
 
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
     public_key: PublicKey3 = Field(
         ...,
         alias="publicKey",
@@ -221,6 +278,9 @@ class HelmV001Schema(BaseModel):
 class Hash2(BaseModel):
     """Specifies the hash algorithm and value encompassing the entire signed envelope; this is computed by the rekor server, client-provided values are ignored."""
 
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
     algorithm: Algorithm = Field(
         ...,
         description="The hashing function used to compute the hash value",
@@ -231,6 +291,9 @@ class Hash2(BaseModel):
 class PayloadHash(BaseModel):
     """Specifies the hash algorithm and value covering the payload within the DSSE envelope; this is computed by the rekor server, client-provided values are ignored."""
 
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
     algorithm: Algorithm = Field(
         ...,
         description="The hashing function used to compute the hash value",
@@ -239,6 +302,9 @@ class PayloadHash(BaseModel):
 
 
 class Content(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
     envelope: Optional[StrictStr] = Field(default=None, description="envelope")
     hash: Optional[Hash2] = Field(
         default=None,
@@ -260,6 +326,9 @@ class Content(BaseModel):
 class IntotoV001Schema(BaseModel):
     """Schema for intoto object."""
 
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
     content: Content
     public_key: str = Field(
         ...,
@@ -271,6 +340,9 @@ class IntotoV001Schema(BaseModel):
 class Signature2(BaseModel):
     """a signature of the envelope's payload along with the public key for the signature."""
 
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
     keyid: Optional[StrictStr] = Field(
         default=None,
         description="optional id of the key used to create the signature",
@@ -286,6 +358,9 @@ class Signature2(BaseModel):
 class Envelope(BaseModel):
     """dsse envelope."""
 
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
     payload: Optional[str] = Field(default=None, description="payload of the envelope")
     payload_type: StrictStr = Field(
         ...,
@@ -302,6 +377,9 @@ class Envelope(BaseModel):
 class Hash3(BaseModel):
     """Specifies the hash algorithm and value encompassing the entire signed envelope."""
 
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
     algorithm: Algorithm = Field(
         ...,
         description="The hashing function used to compute the hash value",
@@ -312,6 +390,9 @@ class Hash3(BaseModel):
 class PayloadHash1(BaseModel):
     """Specifies the hash algorithm and value covering the payload within the DSSE envelope."""
 
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
     algorithm: Algorithm = Field(
         ...,
         description="The hashing function used to compute the hash value",
@@ -320,6 +401,9 @@ class PayloadHash1(BaseModel):
 
 
 class Content1(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
     envelope: Envelope = Field(..., description="dsse envelope")
     hash: Optional[Hash3] = Field(
         default=None,
@@ -339,6 +423,9 @@ class Content1(BaseModel):
 class IntotoV002Schema(BaseModel):
     """Schema for intoto object."""
 
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
     content: Content1
 
 
@@ -349,6 +436,9 @@ class PayloadHash2(Hash):
 class EnvelopeHash(BaseModel):
     """Specifies the hash algorithm and value for the COSE envelope."""
 
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
     algorithm: Algorithm = Field(
         ...,
         description="The hashing function used to compute the hash value",
@@ -359,6 +449,9 @@ class EnvelopeHash(BaseModel):
 class Data1(BaseModel):
     """Information about the content associated with the entry."""
 
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
     payload_hash: Optional[PayloadHash2] = Field(
         default=None,
         alias="payloadHash",
@@ -378,6 +471,9 @@ class Data1(BaseModel):
 class CoseV001Schema(BaseModel):
     """Schema for cose object."""
 
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
     message: Optional[str] = Field(default=None, description="The COSE Sign1 Message")
     public_key: str = Field(
         ...,
@@ -390,6 +486,9 @@ class CoseV001Schema(BaseModel):
 class PublicKey5(BaseModel):
     """The X509 certificate containing the public key JAR which verifies the signature of the JAR."""
 
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
     content: str = Field(
         ...,
         description=(
@@ -402,6 +501,9 @@ class PublicKey5(BaseModel):
 class Signature3(BaseModel):
     """Information about the included signature in the JAR file."""
 
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
     content: str = Field(
         ...,
         description="Specifies the PKCS7 signature embedded within the JAR file ",
@@ -419,6 +521,9 @@ class Signature3(BaseModel):
 class JarV001Schema(BaseModel):
     """Schema for JAR entries."""
 
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
     signature: Optional[Signature3] = Field(
         default=None,
         description="Information about the included signature in the JAR file",
@@ -428,6 +533,9 @@ class JarV001Schema(BaseModel):
 class Tsr(BaseModel):
     """Information about the tsr file associated with the entry."""
 
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
     content: str = Field(
         ...,
         description="Specifies the tsr file content inline within the document",
@@ -437,10 +545,16 @@ class Tsr(BaseModel):
 class Rfc3161V001Schema(BaseModel):
     """Schema for RFC3161 entries."""
 
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
     tsr: Tsr = Field(..., description="Information about the tsr file associated with the entry")
 
 
 class ProposedContent(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
     envelope: StrictStr = Field(
         ...,
         description="DSSE envelope specified as a stringified JSON object",
@@ -458,6 +572,9 @@ class ProposedContent(BaseModel):
 class Signature4(BaseModel):
     """a signature of the envelope's payload along with the verification material for the signature."""
 
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
     signature: StrictStr = Field(..., description="base64 encoded signature of the payload")
     verifier: str = Field(
         ...,
@@ -471,6 +588,9 @@ class Signature4(BaseModel):
 class EnvelopeHash1(BaseModel):
     """Specifies the hash algorithm and value encompassing the entire envelope sent to Rekor."""
 
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
     algorithm: Algorithm = Field(
         ...,
         description="The hashing function used to compute the hash value",
@@ -484,6 +604,9 @@ class EnvelopeHash1(BaseModel):
 class PayloadHash3(BaseModel):
     """Specifies the hash algorithm and value covering the payload within the DSSE envelope."""
 
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
     algorithm: Algorithm = Field(
         ...,
         description="The hashing function used to compute the hash value",
@@ -497,6 +620,9 @@ class PayloadHash3(BaseModel):
 class DsseV001Schema(BaseModel):
     """Schema for DSSE envelopes."""
 
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
     proposed_content: Optional[ProposedContent] = Field(default=None, alias="proposedContent")
     signatures: Optional[List[Signature4]] = Field(
         default=None,
@@ -523,6 +649,9 @@ class DsseV001Schema(BaseModel):
 
 
 class Attestation(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
     data: Optional[Dict[str, Any]] = None
 
 
@@ -535,6 +664,9 @@ class Format1(str, Enum):
 
 
 class PublicKey6(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
     format: Format1
     content: Optional[str] = Field(
         default=None,
@@ -549,6 +681,9 @@ class Operator(str, Enum):
 
 
 class SearchIndex(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
     email: Optional[EmailStr] = None
     public_key: Optional[PublicKey6] = Field(default=None, alias="publicKey")
     hash: Optional[StrictStr] = None
@@ -556,14 +691,23 @@ class SearchIndex(BaseModel):
 
 
 class EntryUuiD(RootModel[StrictStr]):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
     root: StrictStr
 
 
 class LogIndex(RootModel[StrictInt]):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
     root: StrictInt
 
 
 class SearchLogQuery(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
     entry_uui_ds: Optional[List[EntryUuiD]] = Field(
         default=None,
         alias="entryUUIDs",
@@ -580,6 +724,9 @@ class SearchLogQuery(BaseModel):
 
 
 class InactiveShardLogInfo(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
     root_hash: StrictStr = Field(
         ...,
         alias="rootHash",
@@ -599,10 +746,16 @@ class InactiveShardLogInfo(BaseModel):
 
 
 class Hash4(RootModel[StrictStr]):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
     root: StrictStr = Field(..., description="SHA256 hash value expressed in hexadecimal format")
 
 
 class ConsistencyProof(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
     root_hash: StrictStr = Field(
         ...,
         alias="rootHash",
@@ -615,6 +768,9 @@ class ConsistencyProof(BaseModel):
 
 
 class InclusionProof(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
     log_index: StrictInt = Field(
         ...,
         alias="logIndex",
@@ -647,11 +803,17 @@ class InclusionProof(BaseModel):
 
 
 class Error(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
     code: Optional[StrictInt] = None
     message: Optional[StrictStr] = None
 
 
 class RekordSchema(RootModel[RekordV001Schema]):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
     root: RekordV001Schema = Field(
         ...,
         description="Schema for Rekord objects",
@@ -660,6 +822,9 @@ class RekordSchema(RootModel[RekordV001Schema]):
 
 
 class HashedrekordSchema(RootModel[HashedrekordV001Schema]):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
     root: HashedrekordV001Schema = Field(
         ...,
         description="Schema for Rekord objects",
@@ -668,10 +833,16 @@ class HashedrekordSchema(RootModel[HashedrekordV001Schema]):
 
 
 class RpmSchema(RootModel[RpmV001Schema]):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
     root: RpmV001Schema = Field(..., description="Schema for RPM objects", title="RPM Schema")
 
 
 class TufSchema(RootModel[TufV001Schema]):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
     root: TufV001Schema = Field(
         ...,
         description="Schema for TUF metadata objects",
@@ -680,6 +851,9 @@ class TufSchema(RootModel[TufV001Schema]):
 
 
 class AlpineSchema(RootModel[AlpineV001Schema]):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
     root: AlpineV001Schema = Field(
         ...,
         description="Schema for Alpine package objects",
@@ -688,10 +862,16 @@ class AlpineSchema(RootModel[AlpineV001Schema]):
 
 
 class HelmSchema(RootModel[HelmV001Schema]):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
     root: HelmV001Schema = Field(..., description="Schema for Helm objects", title="Helm Schema")
 
 
 class IntotoSchema(RootModel[Union[IntotoV001Schema, IntotoV002Schema]]):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
     root: Union[IntotoV001Schema, IntotoV002Schema] = Field(
         ...,
         description="Intoto for Rekord objects",
@@ -700,14 +880,23 @@ class IntotoSchema(RootModel[Union[IntotoV001Schema, IntotoV002Schema]]):
 
 
 class CoseSchema(RootModel[CoseV001Schema]):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
     root: CoseV001Schema = Field(..., description="COSE for Rekord objects", title="COSE Schema")
 
 
 class JarSchema(RootModel[JarV001Schema]):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
     root: JarV001Schema = Field(..., description="Schema for JAR objects", title="JAR Schema")
 
 
 class Rfc3161Schema(RootModel[Rfc3161V001Schema]):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
     root: Rfc3161V001Schema = Field(
         ...,
         description="Schema for RFC 3161 timestamp objects",
@@ -716,6 +905,9 @@ class Rfc3161Schema(RootModel[Rfc3161V001Schema]):
 
 
 class DsseSchema(RootModel[DsseV001Schema]):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
     root: DsseV001Schema = Field(
         ...,
         description="log entry schema for dsse envelopes",
@@ -724,6 +916,9 @@ class DsseSchema(RootModel[DsseV001Schema]):
 
 
 class Verification(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
     inclusion_proof: Optional[InclusionProof] = Field(default=None, alias="inclusionProof")
     signed_entry_timestamp: Optional[str] = Field(
         default=None,
@@ -734,6 +929,9 @@ class Verification(BaseModel):
 
 
 class LogEntry1(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
     log_id: StrictStr = Field(
         ...,
         alias="logID",
@@ -754,10 +952,16 @@ class LogEntry1(BaseModel):
 
 
 class LogEntry(RootModel[Optional[Dict[str, LogEntry1]]]):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
     root: Optional[Dict[str, LogEntry1]] = None
 
 
 class LogInfo(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
     root_hash: StrictStr = Field(
         ...,
         alias="rootHash",
@@ -783,6 +987,9 @@ class LogInfo(BaseModel):
 class Rekord(ProposedEntry):
     """Rekord object."""
 
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
     api_version: StrictStr = Field(..., alias="apiVersion")
     spec: RekordSchema
 
@@ -790,6 +997,9 @@ class Rekord(ProposedEntry):
 class Hashedrekord(ProposedEntry):
     """Hashed Rekord object."""
 
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
     api_version: StrictStr = Field(..., alias="apiVersion")
     spec: HashedrekordSchema
 
@@ -797,6 +1007,9 @@ class Hashedrekord(ProposedEntry):
 class Rpm(ProposedEntry):
     """RPM package."""
 
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
     api_version: StrictStr = Field(..., alias="apiVersion")
     spec: RpmSchema
 
@@ -804,6 +1017,9 @@ class Rpm(ProposedEntry):
 class Tuf(ProposedEntry):
     """TUF metadata."""
 
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
     api_version: StrictStr = Field(..., alias="apiVersion")
     spec: TufSchema
 
@@ -811,6 +1027,9 @@ class Tuf(ProposedEntry):
 class Alpine(ProposedEntry):
     """Alpine package."""
 
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
     api_version: StrictStr = Field(..., alias="apiVersion")
     spec: AlpineSchema
 
@@ -818,6 +1037,9 @@ class Alpine(ProposedEntry):
 class Helm(ProposedEntry):
     """Helm chart."""
 
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
     api_version: StrictStr = Field(..., alias="apiVersion")
     spec: HelmSchema
 
@@ -825,6 +1047,9 @@ class Helm(ProposedEntry):
 class Intoto(ProposedEntry):
     """Intoto object."""
 
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
     api_version: StrictStr = Field(..., alias="apiVersion")
     spec: IntotoSchema
 
@@ -832,6 +1057,9 @@ class Intoto(ProposedEntry):
 class Cose(ProposedEntry):
     """COSE object."""
 
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
     api_version: StrictStr = Field(..., alias="apiVersion")
     spec: CoseSchema
 
@@ -839,6 +1067,9 @@ class Cose(ProposedEntry):
 class Jar(ProposedEntry):
     """Java Archive (JAR)."""
 
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
     api_version: StrictStr = Field(..., alias="apiVersion")
     spec: JarSchema
 
@@ -846,6 +1077,9 @@ class Jar(ProposedEntry):
 class Rfc3161(ProposedEntry):
     """RFC3161 Timestamp."""
 
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
     api_version: StrictStr = Field(..., alias="apiVersion")
     spec: Rfc3161Schema
 
@@ -853,5 +1087,8 @@ class Rfc3161(ProposedEntry):
 class Dsse(ProposedEntry):
     """DSSE envelope."""
 
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
     api_version: StrictStr = Field(..., alias="apiVersion")
     spec: DsseSchema

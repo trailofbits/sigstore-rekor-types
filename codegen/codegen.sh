@@ -59,6 +59,7 @@ datamodel-codegen \
     --disable-timestamp \
     --reuse-model \
     --use-default-kwarg \
+    --allow-population-by-field-name \
     --strict-types str bytes int float bool \
     --output-model-type pydantic_v2.BaseModel \
     --output "${pkg_dir}/_internal.py"
