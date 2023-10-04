@@ -60,7 +60,7 @@ line-length = 100
 select = ["ALL"]
 
 [tool.ruff.per-file-ignores]
-"sigstore_rekor_types/_internal/*.py" = [
+"sigstore_rekor_types/_internal.py" = [
     "A003",  # some fields shadow python builtins
     "UP006", # pydantic doesn't support PEP 585 below Python 3.9
     "UP007", # pydantic doesn't support PEP 604 below Python 3.10

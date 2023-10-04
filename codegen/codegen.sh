@@ -1,6 +1,17 @@
 #!/usr/bin/env bash
 
 # codegen: generate Python models from Rekor's OpenAPI specs
+#
+# The way we do this is a little roundabout:
+# 1. We `git clone` a copy of Rekor at the version we're generating from
+# 2. We use the online Swagger conversion API to turn Rekor's Swagger 2.0
+#    definition into an OpenAPI 3.0 definition, and save the converted
+#    definition into the Rekor root directory
+# 3. We use `datamodel-codegen` to generate models from the 3.0 definition.
+#
+# This indirection is necessary because of various incompatibilities between
+# components: Rekor uses OpenAPI/Swagger 2.0 because go-swagger only supports
+# 2.0, while datamodel-codegen uses OpenAPI 3.0.
 
 set -eo pipefail
 
@@ -29,32 +40,23 @@ git clone --quiet \
     https://github.com/sigstore/rekor \
     "${rekor_dir}"
 
-# NOTE(ww): This is a miserable hack: ideally we'd use Rekor's top-level
-# `openapi.yaml`, but it's written in OpenAPI 2.0 (because go-swagger only
-# supports 2.0). Meanwhile, `datamodel-codegen` only supports OpenAPI 3.0+.
-# Neither can be trivially upgraded. As a stop-gap, we poke through each
-# internal JSON Schema definition used by Rekor and generate them one-by-one.
-#
-# See:
-#  * https://github.com/go-swagger/go-swagger/issues/1122
-#  * https://github.com/koxudaxi/datamodel-code-generator/issues/1590
-#  * https://github.com/sigstore/rekor/issues/1729
-mkdir -p "${pkg_dir}/_internal"
-touch "${pkg_dir}/_internal/__init__.py"
-rekor_types=(alpine cose dsse hashedrekord helm intoto jar rekord rfc3161 rpm tuf)
-for type in "${rekor_types[@]}"; do
-    dbg "generating models for Rekor type: ${type}"
-    datamodel-codegen \
-        --input "${rekor_dir}/pkg/types/${type}/${type}_schema.json" \
-        --input-file-type jsonschema \
-        --target-python-version 3.8 \
-        --snake-case-field \
-        --capitalize-enum-members \
-        --field-constraints \
-        --strict-types str bytes int float bool \
-        --output-model-type pydantic_v2.BaseModel \
-        --output "${pkg_dir}/_internal/${type}.py"
-done
+# NOTE(ww): For whatever reason, the POST endpoint doesn't work. Instead,
+# we tell the converter to retrieve the OpenAPI YAML URL itself.
+curl -X 'GET' \
+  "https://converter.swagger.io/api/convert?url=https%3A%2F%2Fraw.githubusercontent.com%2Fsigstore%2Frekor%2F${rekor_ref}%2Fopenapi.yaml" \
+  -H 'accept: application/json' \
+  > "${rekor_dir}/openapi.json"
+
+datamodel-codegen \
+    --input "${rekor_dir}/openapi.json" \
+    --input-file-type openapi \
+    --target-python-version 3.8 \
+    --snake-case-field \
+    --capitalize-enum-members \
+    --field-constraints \
+    --strict-types str bytes int float bool \
+    --output-model-type pydantic_v2.BaseModel \
+    --output "${pkg_dir}/_internal.py"
 
 # Cap it off by auto-reformatting.
 make -C "${here}/.." reformat
