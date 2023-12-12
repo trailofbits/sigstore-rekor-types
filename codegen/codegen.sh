@@ -66,6 +66,7 @@ for type in "${rekor_types[@]}"; do
         --input "${rekor_dir}/pkg/types/${type}/${type}_schema.json" \
         --input-file-type jsonschema \
         --target-python-version 3.8 \
+        --collapse-root-models \
         --snake-case-field \
         --capitalize-enum-members \
         --field-constraints \
