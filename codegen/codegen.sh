@@ -40,11 +40,18 @@ git clone --quiet \
     https://github.com/sigstore/rekor \
     "${rekor_dir}"
 
-# NOTE(ww): This is a miserable hack: ideally we'd use Rekor's top-level
-# `openapi.yaml`, but it's written in OpenAPI 2.0 (because go-swagger only
-# supports 2.0). Meanwhile, `datamodel-codegen` only supports OpenAPI 3.0+.
-# Neither can be trivially upgraded. As a stop-gap, we poke through each
-# internal JSON Schema definition used by Rekor and generate them one-by-one.
+# NOTE(ww): Everything below happens because of a confluence of unfortunate
+# factors:
+#
+#  * Rekor's top-level `openapi.yaml` is written in OpenAPI 2.0 (because go-swagger
+#    only supports 2.0)
+#  * `datamodel-codegen` only supports OpenAPI 3.0+
+#  * If we convert Rekor's `openapi.yaml` into an OpenAPI 3.0 format, then
+#    `datamodel-codegen` *works*, but produces suboptimal code (lots
+#    of duplicated models like `Hash1`, `Hash2`, etc. in the same namespace).
+#
+# To get around all of this, we poke through each internal JSON Schema definition
+# used by Rekor and generate them one-by-one into their own modules.
 #
 # See:
 #  * https://github.com/go-swagger/go-swagger/issues/1122
