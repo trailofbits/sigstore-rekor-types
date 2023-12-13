@@ -20,7 +20,7 @@ dependencies = [
 requires-python = ">=3.8"
 
 [project.optional-dependencies]
-doc = ["pdoc"]
+doc = ["pdoc ~= 14.2"]
 lint = [
     # NOTE: ruff is under active development, so we pin conservatively here
     # and let Dependabot periodically perform this update.
