@@ -36,14 +36,14 @@ $(VENV)/pyvenv.cfg: pyproject.toml
 .PHONY: lint
 lint: $(VENV)/pyvenv.cfg
 	. $(VENV_BIN)/activate && \
-		black --preview --check $(ALL_PY_SRCS) && \
+		ruff format --check $(ALL_PY_SRCS) && \
 		ruff $(ALL_PY_SRCS) && \
 		mypy $(PY_MODULE)
 
 .PHONY: reformat
-reformat:
+reformat: $(VENV)/pyvenv.cfg
 	. $(VENV_BIN)/activate && \
-		black --preview $(ALL_PY_SRCS) && \
+		ruff format $(ALL_PY_SRCS) && \
 		ruff --fix $(ALL_PY_SRCS)
 
 .PHONY: doc
