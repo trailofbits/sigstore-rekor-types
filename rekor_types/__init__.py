@@ -2,10 +2,9 @@
 
 from __future__ import annotations
 
-from calendar import c
-from typing import Annotated, Literal
+from typing import Literal
 
-from pydantic import BaseModel, ConfigDict, Field, RootModel, StrictStr
+from pydantic import BaseModel, ConfigDict, Field, StrictStr
 
 from ._internal import (  # noqa: F401
     alpine,
@@ -31,48 +30,49 @@ class _ProposedEntryMixin(BaseModel):
     api_version: StrictStr = Field(
         pattern=r"^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$",
         default="0.0.1",
+        alias="apiVersion",
     )
     kind: StrictStr
     spec: _Spec = Field(..., discriminator="kind")
 
 
 class Alpine(_ProposedEntryMixin):
-    kind: Literal["alpine"]
+    kind: Literal["alpine"] = "alpine"
     spec: alpine.AlpinePackageSchema
 
 
 class Cose(_ProposedEntryMixin):
-    kind: Literal["cose"]
+    kind: Literal["cose"] = "cose"
     spec: cose.CoseSchema
 
 
 class Dsse(_ProposedEntryMixin):
-    kind: Literal["dsse"]
+    kind: Literal["dsse"] = "dsse"
     spec: dsse.DsseSchema
 
 
 class Hashedrekord(_ProposedEntryMixin):
-    kind: Literal["hashedrekord"]
+    kind: Literal["hashedrekord"] = "hashedrekord"
     spec: hashedrekord.RekorSchema
 
 
 class Helm(_ProposedEntryMixin):
-    kind: Literal["helm"]
+    kind: Literal["helm"] = "helm"
     spec: helm.HelmSchema
 
 
 class Intoto(_ProposedEntryMixin):
-    kind: Literal["intoto"]
+    kind: Literal["intoto"] = "intoto"
     spec: intoto.IntotoSchema
 
 
 class Jar(_ProposedEntryMixin):
-    kind: Literal["jar"]
+    kind: Literal["jar"] = "jar"
     spec: jar.JarSchema
 
 
 class Rekord(_ProposedEntryMixin):
-    kind: Literal["rekord"]
+    kind: Literal["rekord"] = "rekord"
     spec: rekord.RekorSchema
 
 
