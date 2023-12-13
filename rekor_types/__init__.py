@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import sys
-from typing import Literal
+from typing import Literal, Union
 
 from pydantic import BaseModel, ConfigDict, Field, StrictInt, StrictStr
 
@@ -125,6 +125,6 @@ class Tuf(_ProposedEntryMixin):
 
 
 ProposedEntry = Annotated[
-    Alpine | Cose | Dsse | Hashedrekord | Helm | Intoto | Jar | Rekord | Rfc3161 | Rpm | Tuf,
+    Union[Alpine, Cose, Dsse, Hashedrekord, Helm, Intoto, Jar, Rekord, Rfc3161, Rpm, Tuf],
     Field(discriminator="kind"),
 ]
