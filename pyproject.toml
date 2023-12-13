@@ -13,7 +13,10 @@ classifiers = [
     "Programming Language :: Python :: 3",
     "License :: OSI Approved :: Apache Software License",
 ]
-dependencies = ["pydantic[email] >=2,<3"]
+dependencies = [
+    "pydantic[email] >=2,<3",
+    "typing-extensions; python_version < '3.9'",
+]
 requires-python = ">=3.8"
 
 [project.optional-dependencies]
@@ -28,6 +31,8 @@ lint = [
 codegen = ["datamodel-code-generator", "sigstore-rekor-types[lint]"]
 dev = ["sigstore-rekor-types[codegen,doc,lint]", "build"]
 
+[tool.flit.module]
+name = "rekor_types"
 
 [project.urls]
 Homepage = "https://pypi.org/project/sigstore-rekor-types"
@@ -60,7 +65,10 @@ line-length = 100
 select = ["ALL"]
 
 [tool.ruff.per-file-ignores]
-"sigstore_rekor_types/_internal.py" = [
+"rekor_types/__init__.py" = [
+    "TCH001", # False positive: imports are re-exports, not just for type hints.
+]
+"rekor_types/_internal/*.py" = [
     "A003",  # some fields shadow python builtins
     "E501",  # handled by black, and catches some docstrings we can't autofix
     "UP006", # pydantic doesn't support PEP 585 below Python 3.9

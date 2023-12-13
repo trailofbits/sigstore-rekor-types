@@ -1,6 +1,6 @@
 SHELL := /bin/bash
 
-PY_MODULE := sigstore_rekor_types
+PY_MODULE := rekor_types
 
 ALL_PY_SRCS := $(shell find $(PY_MODULE) -name '*.py')
 
