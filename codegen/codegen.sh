@@ -66,6 +66,7 @@ for type in "${rekor_types[@]}"; do
         --input "${rekor_dir}/pkg/types/${type}/${type}_schema.json" \
         --input-file-type jsonschema \
         --target-python-version 3.8 \
+        --enable-version-header \
         --collapse-root-models \
         --snake-case-field \
         --capitalize-enum-members \
@@ -75,6 +76,7 @@ for type in "${rekor_types[@]}"; do
         --disable-timestamp \
         --reuse-model \
         --use-default-kwarg \
+        --use-double-quotes \
         --allow-population-by-field-name \
         --strict-types str bytes int float bool \
         --output-model-type pydantic_v2.BaseModel \
