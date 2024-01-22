@@ -13,7 +13,7 @@
 # components: Rekor uses OpenAPI/Swagger 2.0 because go-swagger only supports
 # 2.0, while datamodel-codegen uses OpenAPI 3.0.
 
-set -eo pipefail
+set -o pipefail
 
 # Always enable debug logging in CI.
 DEBUG="${DEBUG:-${CI}}"
@@ -24,8 +24,8 @@ dbg() {
 
 type -p datamodel-codegen || { >&2 echo "barf: missing datamodel-codegen"; exit 1; }
 
-here="$(dirname -- "$(readlink -f -- "${0}")")"
-pkg_dir="$(readlink -f -- "${here}/../sigstore_rekor_types")"
+here="$(dirname -- "$(realpath -- "${0}")")"
+pkg_dir="$(realpath -- "${here}/../rekor_types")"
 [[ -d "${pkg_dir}" ]] || { >&2 echo "missing package dir: ${pkg_dir}"; exit 1; }
 dbg "codegen running from ${here} and writing to ${pkg_dir}"
 
