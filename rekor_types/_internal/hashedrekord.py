@@ -43,6 +43,8 @@ class Algorithm(str, Enum):
     """The hashing function used to compute the hash value"""
 
     SHA256 = "sha256"
+    SHA384 = "sha384"
+    SHA512 = "sha512"
 
 
 class Hash(BaseModel):
@@ -55,7 +57,10 @@ class Hash(BaseModel):
         ...,
         description="The hashing function used to compute the hash value",
     )
-    value: StrictStr = Field(..., description="The hash value for the content")
+    value: StrictStr = Field(
+        ...,
+        description="The hash value for the content, as represented by a lower case hexadecimal string",
+    )
 
 
 class Data(BaseModel):
