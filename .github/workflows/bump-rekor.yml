@@ -1,0 +1,42 @@
+name: check for new Rekor releases
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 12 * * *'
+  pull_request:
+
+jobs:
+  check-rekor-release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version-file: pyproject.toml
+          cache: "pip"
+          cache-dependency-path: pyproject.toml
+
+      - name: get latest rekor release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh api /repos/sigstore/rekor/releases/latest -q .tag_name > codegen/version
+
+      - name: codegen
+        run: ./codegen/codegen.sh
+
+      - name: create PR
+        uses: peter-evans/create-pull-request@v6
+        with:
+          commit-message: "[BOT] Regenerate for new Rekor version"
+          branch: update-rekor
+          branch-suffix: timestamp
+          title: "[BOT] bump Rekor"
+          body: |
+            This is an automated pull request, bumping the code generation
+            to match the latest Rekor release.
+
+            Please review manually before merging.
+          assignees: "woodruffw"
+          reviewers: "woodruffw"
