@@ -24,7 +24,10 @@ jobs:
           gh api /repos/sigstore/rekor/releases/latest -q .tag_name > codegen/version
 
       - name: codegen
-        run: ./codegen/codegen.sh
+        run: |
+          make dev
+          source env/bin/activate
+          ./codegen/codegen.sh
 
       - name: create PR
         uses: peter-evans/create-pull-request@v6
