@@ -37,14 +37,14 @@ $(VENV)/pyvenv.cfg: pyproject.toml
 lint: $(VENV)/pyvenv.cfg
 	. $(VENV_BIN)/activate && \
 		ruff format --check $(ALL_PY_SRCS) && \
-		ruff $(ALL_PY_SRCS) && \
+		ruff check $(ALL_PY_SRCS) && \
 		mypy $(PY_MODULE)
 
 .PHONY: reformat
 reformat: $(VENV)/pyvenv.cfg
 	. $(VENV_BIN)/activate && \
 		ruff format $(ALL_PY_SRCS) && \
-		ruff --fix $(ALL_PY_SRCS)
+		ruff check --fix $(ALL_PY_SRCS)
 
 .PHONY: doc
 doc: $(VENV)/pyvenv.cfg
