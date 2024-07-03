@@ -28,8 +28,7 @@ all:
 dev: $(VENV)/pyvenv.cfg
 
 $(VENV)/pyvenv.cfg: pyproject.toml
-	# Create our Python 3 virtual environment
-	python3 -m venv env
+	python -m venv env
 	$(VENV_BIN)/python -m pip install --upgrade pip
 	$(VENV_BIN)/python -m pip install -e .[$(INSTALL_EXTRA)]
 
@@ -54,7 +53,7 @@ doc: $(VENV)/pyvenv.cfg
 .PHONY: package
 package: $(VENV)/pyvenv.cfg
 	. $(VENV_BIN)/activate && \
-		python3 -m build
+		python -m build
 
 .PHONY: edit
 edit:
