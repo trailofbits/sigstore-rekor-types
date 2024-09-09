@@ -32,7 +32,7 @@ jobs:
           ./codegen/codegen.sh
 
       - name: create PR
-        uses: peter-evans/create-pull-request@v6
+        uses: peter-evans/create-pull-request@v7
         with:
           commit-message: "[BOT] Regenerate for new Rekor version"
           branch: update-rekor
