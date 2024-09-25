@@ -29,6 +29,9 @@ dev = ["sigstore-rekor-types[codegen,doc,lint]", "build"]
 [tool.setuptools]
 packages = ["rekor_types"]
 
+[tool.setuptools.dynamic]
+version = { attr = "rekor_types.__version__" }
+
 [project.urls]
 Homepage = "https://pypi.org/project/sigstore-rekor-types"
 Documentation = "https://trailofbits.github.io/sigstore-rekor-types/"
