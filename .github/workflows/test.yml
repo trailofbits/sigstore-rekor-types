@@ -30,4 +30,6 @@ jobs:
 
             ./smoketest-env/bin/python -m pip install "${dist}"
             ./smoketest-env/bin/python -c 'import rekor_types'
+
+            rm -rf smoketest-env
           done
