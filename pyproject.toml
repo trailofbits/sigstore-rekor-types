@@ -31,7 +31,7 @@ codegen = ["datamodel-code-generator>=0.25.2", "sigstore-rekor-types[lint]"]
 dev = ["sigstore-rekor-types[codegen,doc,lint]", "build"]
 
 [tool.setuptools]
-packages = ["rekor_types"]
+package-dir = { "" = "src" }
 
 [tool.setuptools.dynamic]
 version = { attr = "rekor_types.__version__" }

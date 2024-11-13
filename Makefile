@@ -2,7 +2,7 @@ SHELL := /bin/bash
 
 PY_MODULE := rekor_types
 
-ALL_PY_SRCS := $(shell find $(PY_MODULE) -name '*.py')
+ALL_PY_SRCS := $(shell find src/$(PY_MODULE) -name '*.py')
 
 # Optionally overriden by the user, if they're using a virtual environment manager.
 VENV ?= env
