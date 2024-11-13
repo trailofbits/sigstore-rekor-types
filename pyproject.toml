@@ -27,11 +27,12 @@ lint = [
     "ruff < 0.7.4",
     "mypy >= 1.0",
 ]
+test = ["pytest"]
 codegen = ["datamodel-code-generator>=0.25.2", "sigstore-rekor-types[lint]"]
-dev = ["sigstore-rekor-types[codegen,doc,lint]", "build"]
+dev = ["sigstore-rekor-types[codegen,doc,lint,test]", "build"]
 
 [tool.setuptools]
-packages = ["rekor_types"]
+py-modules = ["rekor_types"]
 
 [tool.setuptools.dynamic]
 version = { attr = "rekor_types.__version__" }
