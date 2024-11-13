@@ -25,10 +25,11 @@ jobs:
       - name: Get zizmor
         run: cargo install zizmor
       - name: Run zizmor 🌈
-        run: zizmor --format sarif . > results.sarif || true
+        run: zizmor --format sarif . > results.sarif
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Upload SARIF file
+        if: ${{ !cancelled() }}
         uses: github/codeql-action/upload-sarif@4e7d89f9f0a59fd9d68561cfbfd15475eaf75298 # v3
         with:
           sarif_file: results.sarif
