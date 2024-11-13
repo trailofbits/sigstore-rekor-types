@@ -23,7 +23,8 @@ jobs:
           python-version-file: pyproject.toml
 
       - run: |
-          make package
+          python -m pip install build
+          python -m build
 
           for dist in dist/*; do
             python -m venv smoketest-env
