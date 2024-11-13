@@ -1,9 +1,11 @@
 name: Tests
 
 on:
-  release:
-    types:
-      - published
+  pull_request:
+  push:
+    branches:
+      - main
+
 
 permissions: # added using https://github.com/step-security/secure-workflows
   contents: read
