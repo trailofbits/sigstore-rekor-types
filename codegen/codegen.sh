@@ -25,7 +25,7 @@ dbg() {
 type -p datamodel-codegen || { >&2 echo "barf: missing datamodel-codegen"; exit 1; }
 
 here="$(dirname -- "$(realpath -- "${0}")")"
-pkg_dir="$(realpath -- "${here}/../rekor_types")"
+pkg_dir="$(realpath -- "${here}/../src/rekor_types")"
 [[ -d "${pkg_dir}" ]] || { >&2 echo "missing package dir: ${pkg_dir}"; exit 1; }
 dbg "codegen running from ${here} and writing to ${pkg_dir}"
 
