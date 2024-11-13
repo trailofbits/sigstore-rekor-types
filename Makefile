@@ -2,8 +2,6 @@ SHELL := /bin/bash
 
 PY_MODULE := rekor_types
 
-ALL_PY_SRCS := $(shell find src/$(PY_MODULE) -name '*.py')
-
 # Optionally overriden by the user, if they're using a virtual environment manager.
 VENV ?= env
 
@@ -35,15 +33,15 @@ $(VENV)/pyvenv.cfg: pyproject.toml
 .PHONY: lint
 lint: $(VENV)/pyvenv.cfg
 	. $(VENV_BIN)/activate && \
-		ruff format --check $(ALL_PY_SRCS) && \
-		ruff check $(ALL_PY_SRCS) && \
-		mypy $(PY_MODULE)
+		ruff format --check src/ && \
+		ruff check src/ && \
+		mypy src/$(PY_MODULE)
 
 .PHONY: reformat
 reformat: $(VENV)/pyvenv.cfg
 	. $(VENV_BIN)/activate && \
-		ruff format $(ALL_PY_SRCS) && \
-		ruff check --fix $(ALL_PY_SRCS)
+		ruff format src/ && \
+		ruff check --fix src/
 
 .PHONY: doc
 doc: $(VENV)/pyvenv.cfg
@@ -55,6 +53,3 @@ package: $(VENV)/pyvenv.cfg
 	. $(VENV_BIN)/activate && \
 		python -m build
 
-.PHONY: edit
-edit:
-	$(EDITOR) $(ALL_PY_SRCS)
