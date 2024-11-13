@@ -34,8 +34,3 @@ jobs:
 
             rm -rf /tmp/smoketest-env
           done
-
-      - uses: actions/upload-artifact@v4
-        with:
-          name: dists
-          path: dist/
