@@ -5,22 +5,23 @@ on:
 
 name: release
 
-permissions:
-  # Used for trusted publishing.
-  # Used to sign the release's artifacts with sigstore-python.
-  id-token: write
-
-  # Used to attach signing artifacts to the published release.
-  contents: write
-
 jobs:
   pypi:
     name: upload release to PyPI
     runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v4
+    permissions:
+      # Used for trusted publishing.
+      # Used to sign the release's artifacts with sigstore-python.
+      id-token: write
 
-    - uses: actions/setup-python@v5
+      # Used to attach signing artifacts to the published release.
+      contents: write
+    steps:
+    - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+      with:
+        persist-credentials: false
+
+    - uses: actions/setup-python@0b93645e9fea7318ecaed2b359559ac225c90a2b # v5
       with:
         python-version-file: pyproject.toml
 
@@ -31,4 +32,4 @@ jobs:
       run: python -m build
 
     - name: publish
-      uses: pypa/gh-action-pypi-publish@v1.12.2
+      uses: pypa/gh-action-pypi-publish@15c56dba361d8335944d31a2ecd17d700fc7bcbc # v1.12.2
