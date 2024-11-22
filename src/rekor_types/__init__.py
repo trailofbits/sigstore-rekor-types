@@ -72,7 +72,7 @@ class Hashedrekord(_ProposedEntryMixin):
     """Proposed entry model for a `dsse` record."""
 
     kind: Literal["hashedrekord"] = "hashedrekord"
-    spec: hashedrekord.RekorSchema
+    spec: hashedrekord.HashedrekordSchema
 
 
 class Helm(_ProposedEntryMixin):
