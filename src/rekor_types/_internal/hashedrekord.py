@@ -88,12 +88,12 @@ class HashedrekordV001Schema(BaseModel):
     data: Data = Field(..., description="Information about the content associated with the entry")
 
 
-class RekorSchema(RootModel[HashedrekordV001Schema]):
+class HashedrekordSchema(RootModel[HashedrekordV001Schema]):
     model_config = ConfigDict(
         populate_by_name=True,
     )
     root: HashedrekordV001Schema = Field(
         ...,
-        description="Schema for Rekord objects",
-        title="Rekor Schema",
+        description="Schema for Hashedrekord objects",
+        title="Hashedrekord Schema",
     )
