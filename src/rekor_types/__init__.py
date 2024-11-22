@@ -26,7 +26,7 @@ if sys.version_info < (3, 9):
 else:
     from typing import Annotated
 
-__version__ = "0.0.17"
+__version__ = "0.0.18"
 
 
 class Error(BaseModel):
