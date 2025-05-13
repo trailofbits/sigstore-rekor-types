@@ -66,7 +66,8 @@ for type in "${rekor_types[@]}"; do
     datamodel-codegen \
         --input "${rekor_dir}/pkg/types/${type}/${type}_schema.json" \
         --input-file-type jsonschema \
-        --target-python-version 3.8 \
+        --target-python-version 3.9 \
+        --formatters black isort ruff-check ruff-format \
         --enable-version-header \
         --collapse-root-models \
         --snake-case-field \
