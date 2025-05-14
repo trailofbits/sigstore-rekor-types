@@ -66,7 +66,7 @@ for type in "${rekor_types[@]}"; do
         --input "${rekor_dir}/pkg/types/${type}/${type}_schema.json" \
         --input-file-type jsonschema \
         --target-python-version 3.9 \
-        --formatters black isort ruff-check ruff-format \
+        --formatters ruff-check ruff-format \
         --enable-version-header \
         --collapse-root-models \
         --snake-case-field \
@@ -74,6 +74,7 @@ for type in "${rekor_types[@]}"; do
         --field-constraints \
         --use-schema-description \
         --use-subclass-enum \
+        --use-standard-collections \
         --disable-timestamp \
         --reuse-model \
         --use-default-kwarg \
