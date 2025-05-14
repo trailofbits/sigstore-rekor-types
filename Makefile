@@ -40,8 +40,8 @@ lint: $(VENV)/pyvenv.cfg
 .PHONY: reformat
 reformat: $(VENV)/pyvenv.cfg
 	. $(VENV_BIN)/activate && \
-		ruff format src/ && \
-		ruff check --fix src/
+		ruff format --target-version py39 src/ && \
+		ruff check --fix --target-version py39 src/
 
 .PHONY: doc
 doc: $(VENV)/pyvenv.cfg
