@@ -59,13 +59,15 @@ git clone --quiet \
 #  * https://github.com/sigstore/rekor/issues/1729
 mkdir -p "${pkg_dir}/_internal"
 touch "${pkg_dir}/_internal/__init__.py"
+# RekorV1
 rekor_types=(alpine cose dsse hashedrekord helm intoto jar rekord rfc3161 rpm tuf)
 for type in "${rekor_types[@]}"; do
     dbg "generating models for Rekor type: ${type}"
     datamodel-codegen \
         --input "${rekor_dir}/pkg/types/${type}/${type}_schema.json" \
         --input-file-type jsonschema \
-        --target-python-version 3.8 \
+        --target-python-version 3.9 \
+        --formatters black isort ruff-check ruff-format \
         --enable-version-header \
         --collapse-root-models \
         --snake-case-field \
@@ -81,6 +83,43 @@ for type in "${rekor_types[@]}"; do
         --strict-types str bytes int float bool \
         --output-model-type pydantic_v2.BaseModel \
         --output "${pkg_dir}/_internal/${type}.py"
+done
+
+# RekorV2
+rekorv2_ref="main" # not yet a non-prelease release.
+rekorv2_dir=$(mktemp -d)/rekor-tiles
+rekorv2_out_dir="${pkg_dir}/_internal/rekorv2"
+mkdir -p "${rekorv2_out_dir}/"
+touch "${rekorv2_out_dir}/__init__.py"
+dbg "cloning RekorV2 into ${rekorv2_dir}"
+git clone --quiet \
+    --depth=1 \
+    --branch="${rekorv2_ref}" \
+    https://github.com/sigstore/rekor-tiles \
+    "${rekorv2_dir}"
+rekorv2_types=(rekor_service)
+for type in "${rekorv2_types[@]}"; do
+    dbg "generating models for RekorV2 type: ${type}"
+    datamodel-codegen \
+        --input "${rekorv2_dir}/docs/openapi/${type}.swagger.json" \
+        --input-file-type jsonschema \
+        --target-python-version 3.9 \
+        --formatters ruff-check ruff-format \
+        --enable-version-header \
+        --collapse-root-models \
+        --snake-case-field \
+        --capitalize-enum-members \
+        --field-constraints \
+        --use-schema-description \
+        --use-subclass-enum \
+        --disable-timestamp \
+        --reuse-model \
+        --use-default-kwarg \
+        --use-double-quotes \
+        --allow-population-by-field-name \
+        --strict-types str bytes int float bool \
+        --output-model-type pydantic_v2.BaseModel \
+        --output "${rekorv2_out_dir}/${type}.py"
 done
 
 # Cap it off by auto-reformatting.

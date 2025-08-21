@@ -17,7 +17,7 @@ dependencies = [
     "pydantic[email] >=2,<3",
     "typing-extensions; python_version < '3.9'",
 ]
-requires-python = ">=3.8"
+requires-python = ">=3.9"
 
 [project.optional-dependencies]
 doc = ["pdoc >= 14.2,< 16.0"]
@@ -68,11 +68,12 @@ select = ["ALL"]
 "src/rekor_types/__init__.py" = [
     "TCH001", # False positive: imports are re-exports, not just for type hints.
 ]
-"src/rekor_types/_internal/*.py" = [
+"src/rekor_types/_internal/**/*.py" = [
     "A003",   # some fields shadow python builtins
     "E501",   # handled by black, and catches some docstrings we can't autofix
     "ERA001", # false positives
     "D400",   # overly opinionated docstrings
+    "D205",   # 1 blank line required between summary line and description
     "D415",   # overly opinionated docstrings
     "UP006",  # pydantic doesn't support PEP 585 below Python 3.9
     "UP007",  # pydantic doesn't support PEP 604 below Python 3.10
